@@ -32,72 +32,68 @@ def nearest_neighbors(word, E, word_to_id, id_to_word, counts=None, top_k=3):
 
 if __name__ == "__main__":
 
-    freq = Counter(w for s in sentences for w in s if not is_punctuation(w))
-    print("Hapax:", sum(1 for c in freq.values() if c == 1), "of", len(freq))
-    print("Ending in ም:", sum(1 for w in freq if w.endswith("ም")), "types")
-    for w in words_to_test: print(w, freq[w])
-        # Test 1: cosine similarity
-    # print("Cosine similarity tests:")
+    # Test 1: cosine similarity
+    print("Cosine similarity tests:")
 
-    # vector_a = [1.0, 0.0]
-    # vector_b = [1.0, 0.0]
+    vector_a = [1.0, 0.0]
+    vector_b = [1.0, 0.0]
 
-    # print(
-    #     "Same vectors:",
-    #     cosine_similarity(vector_a, vector_b)
-    # )
+    print(
+        "Same vectors:",
+        cosine_similarity(vector_a, vector_b)
+    )
 
-    # vector_c = [1.0, 0.0]
-    # vector_d = [0.0, 1.0]
+    vector_c = [1.0, 0.0]
+    vector_d = [0.0, 1.0]
 
-    # print(
-    #     "Orthogonal vectors:",
-    #     cosine_similarity(vector_c, vector_d)
-    # )
+    print(
+        "Orthogonal vectors:",
+        cosine_similarity(vector_c, vector_d)
+    )
 
-    # zero_vector = [0.0, 0.0]
+    zero_vector = [0.0, 0.0]
 
-    # print(
-    #     "Zero vector:",
-    #     cosine_similarity(vector_a, zero_vector)
-    # )
+    print(
+        "Zero vector:",
+        cosine_similarity(vector_a, zero_vector)
+    )
 
-    # # Test 2: unknown word
-    # E = [
-    #     [1.0, 0.0],
-    #     [0.0, 1.0],
-    #     [1.0, 1.0]
-    # ]
+    # Test 2: unknown word
+    E = [
+        [1.0, 0.0],
+        [0.0, 1.0],
+        [1.0, 1.0]
+    ]
 
-    # word_to_id = {
-    #     "word_a": 0,
-    #     "word_b": 1,
-    #     "word_c": 2
-    # }
+    word_to_id = {
+        "word_a": 0,
+        "word_b": 1,
+        "word_c": 2
+    }
 
-    # id_to_word = [
-    #     "word_a",
-    #     "word_b",
-    #     "word_c"
-    # ]
+    id_to_word = [
+        "word_a",
+        "word_b",
+        "word_c"
+    ]
 
-    # print("\nUnknown word test:")
+    print("\nUnknown word test:")
 
-    # known_result = nearest_neighbors(
-    #     "word_a",
-    #     E,
-    #     word_to_id,
-    #     id_to_word,
-    #     top_k=2
-    # )
+    known_result = nearest_neighbors(
+        "word_a",
+        E,
+        word_to_id,
+        id_to_word,
+        top_k=2
+    )
 
-    # unknown_result = nearest_neighbors(
-    #     "not_in_vocabulary",
-    #     E,
-    #     word_to_id,
-    #     id_to_word,
-    #     top_k=2
-    # )
+    unknown_result = nearest_neighbors(
+        "not_in_vocabulary",
+        E,
+        word_to_id,
+        id_to_word,
+        top_k=2
+    )
 
-    # print("Known word:", known_result)
-    # print("Unknown word:", unknown_result)
+    print("Known word:", known_result)
+    print("Unknown word:", unknown_result)

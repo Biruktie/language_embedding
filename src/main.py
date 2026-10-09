@@ -10,7 +10,7 @@ from model import initialize_parameters
 
 from training import train
 
-from evaluation import nearest_neighbors
+from evaluation import cosine_similarity, nearest_neighbors
 
 
 def main():
@@ -97,12 +97,43 @@ def main():
     print("Initial loss:", loss_history[0])
     print("Final loss:", loss_history[-1])
 
+    
     # --------------------------------------------------------
-    # Evaluation
+    # Evaluation tests
     # --------------------------------------------------------
 
-    print("\n===== EVALUATION =====")
+    print("\n===== EVALUATION TESTS =====")
 
+    # Test 1: Identical vectors should have cosine similarity 1.
+    same_similarity = cosine_similarity(
+        [1.0, 0.0],
+        [1.0, 0.0]
+    )
+
+    print("Identical vectors:", same_similarity)
+    assert abs(same_similarity - 1.0) < 1e-5
+
+    # Test 2: Orthogonal vectors should have cosine similarity 0.
+    orthogonal_similarity = cosine_similarity(
+        [1.0, 0.0],
+        [0.0, 1.0]
+    )
+
+    print("Orthogonal vectors:", orthogonal_similarity)
+    assert abs(orthogonal_similarity) < 1e-5
+
+    # Test 3: A zero-norm vector must not cause a crash.
+    zero_similarity = cosine_similarity(
+        [1.0, 0.0],
+        [0.0, 0.0]
+    )
+
+    print("Zero-norm vector:", zero_similarity)
+    assert zero_similarity == 0.0
+
+    print("Cosine similarity tests: passed")
+
+    # Test 4: Query five words from the trained vocabulary.
     words_to_test = [
         "ትንም",
         "ይፍቴ",
@@ -111,9 +142,11 @@ def main():
         "ሰሜም"
     ]
 
-    print("\nNearest neighbors:")
+    print("\n===== NEAREST NEIGHBORS =====")
 
     for word in words_to_test:
+        assert word in word_to_id, f"Test word missing: {word}"
+
         neighbors = nearest_neighbors(
             word,
             E,
@@ -122,15 +155,21 @@ def main():
             top_k=3
         )
 
-        print(word, "->", neighbors)
+        print(f"{word} -> {neighbors}")
 
-    # --------------------------------------------------------
-    # Unknown word test
-    # --------------------------------------------------------
+        # Each query should have three neighbors in this vocabulary.
+        assert len(neighbors) == 3
 
-    unknown_word = "ይህ_በቃ_አይገኝም"
+        # The query word must not appear among its own neighbors.
+        neighbor_words = [item[0] for item in neighbors]
+        assert word not in neighbor_words
 
-    unknown_neighbors = nearest_neighbors(
+    print("Nearest-neighbor tests: passed")
+
+    # Test 5: Unknown words must be handled safely.
+    unknown_word = "not_in_vocabulary"
+
+    unknown_result = nearest_neighbors(
         unknown_word,
         E,
         word_to_id,
@@ -138,8 +177,10 @@ def main():
         top_k=3
     )
 
-    print("\nUnknown word test:")
-    print(unknown_word, "->", unknown_neighbors)
+    print("\nUnknown word result:", unknown_result)
+
+    assert unknown_result == []
+    print("Unknown-word handling: passed")
 
 
 if __name__ == "__main__":
